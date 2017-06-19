@@ -4,7 +4,7 @@ define([], function(){
 
 	/**
 	* adds the matrices
-	* @params -	a - matrix 1
+	* @param -	a - matrix 1
 	*       	b - matrix 2
 	* @return -	c - answer - a + b
 	**/
@@ -23,7 +23,7 @@ define([], function(){
 
 	/**
 	* subtracts the matrices
-	* @params -	a - matrix 1
+	* @param -	a - matrix 1
 	*       	b - matrix 2
 	* @return -	c - answer - a - b
 	**/
@@ -43,7 +43,7 @@ define([], function(){
 	/**
 	* multiplies the matrices
 	* requires that number of columns of a are equal to number of rows b
-	* @params -	a - matrix 1
+	* @param -	a - matrix 1
 	*       	b - matrix 2
 	* @return -	c - answer - a * b
 	**/
@@ -67,7 +67,7 @@ define([], function(){
 	* inverts a given square matrix using LU decomposition and partial pivoting.
 	* validateMatrices checks whether a matrix is square or not. Throws an error
 	* if the matrix is not square.
-	* @params -	a - Matrix to be inverted
+	* @param -	a - Matrix to be inverted
 	* @return -	c - Inverted matrix
 	**/
 	function invert(/* Matrix */ a){
@@ -98,7 +98,7 @@ define([], function(){
 	* solves the equation of the form Ax = b using LU decomposition.
 	* due to decomposition solution is calculated in two steps
 	* Ld = b, calculate d vector in this, then Ux = d calculate x in this.
-	* @params -	L - Lower triangle matrix with diagonals equal to 1
+	* @param -	L - Lower triangle matrix with diagonals equal to 1
 	*       	U - Upper triangle matrix
 	*       	b - Right hand side vector of the equation Ax = b
 	* @return -	x - solution vector calculated as per above steps
@@ -131,7 +131,7 @@ define([], function(){
 	* calculated LU decomposition of any given square matrix (A). Initially L is set to
 	* identity matrix and U is set to A matrix. Iterative calculations are done using
 	* equations from LU = A. Pivots are corrected if diagonal elements go below 0.01.
-	* @params -	a - Matrix whose inverse is to be calculated
+	* @param -	a - Matrix whose inverse is to be calculated
 	* @return -	obj - a JSON object which holds -
 	*       	L - Lower triangle matrix for the decomposition
 	*       	U - Upper triangle matrix for the decomposition
@@ -175,7 +175,7 @@ define([], function(){
 	/**
 	* finds the row which should be switched with the diagonal element of the matrix.
 	* calculated by finding maximum number after diagonal element which is to be swapped.
-	* @params -	a - matrix for which pivot is to swapped.
+	* @param -	a - matrix for which pivot is to swapped.
 	*        	index - index of the pivot element which is to be swapped.
 	* @return -	returnIndex - new pivot index that is calculated. If all the
 	*				values are less than _epsilon value set at the top,
@@ -210,7 +210,7 @@ define([], function(){
 
 		/**
 		* constructor with one parameter
-		* @params -	data - the numbers stored in a matrix
+		* @param -	data - the numbers stored in a matrix
 		**/
 		var _matrixOneArgument = function(/* 2D array*/ data){
 			if(!data)
@@ -236,7 +236,7 @@ define([], function(){
 		* the value given by the user or Number.MIN_VALUE.
 		* Reason to initialize these values is to ensure that the size of the matrix
 		* is fixed.
-		* @params -	_rows - number of rows
+		* @param -	_rows - number of rows
 		*       	_cols - number of columns
 		*       	initialization - a single value that will be used to initialize the matrix
 		**/
@@ -288,7 +288,7 @@ define([], function(){
 
 	/**
 	* creates a square matrix with all values holding same data.
-	* @params -	size - size of the square matrix
+	* @param -	size - size of the square matrix
 	*       	value - single value that is to be added to each data point.
 	* @return -	Matrix - a matrix which is a square matrix.
 	**/
@@ -299,7 +299,7 @@ define([], function(){
 	/**
 	* creates an identity matrix with diagonal values set to 1 and rest of the values
 	* set to 0.
-	* @params - size - number of rows and columns in the matrix.
+	* @param - size - number of rows and columns in the matrix.
 	* @return -	I - identity matrix.
 	**/
 	Matrix.identity = function(/* integer */ size){
@@ -312,7 +312,7 @@ define([], function(){
 
 	/**
 	* copies a given matrix to a new matrix. Used to copy A to U for LU decomposition
-	* @params -	a - Matrix to be copied
+	* @param -	a - Matrix to be copied
 	* @return -	mat - new Matrix created after copying.
 	**/
 	Matrix.copy = function(/* Matrix */ a){
@@ -326,7 +326,7 @@ define([], function(){
 	Matrix.prototype = {
 		/**
 		* gets the column data for a matrix
-		* @params -	index - column index that is needed for the matrix
+		* @param -	index - column index that is needed for the matrix
 		* @return -	colData - array of data in the column at the index.
 		*				if the index is greater than column then returns an empty array.
 		**/
@@ -340,7 +340,7 @@ define([], function(){
 		},
 		/**
 		* gets the row data for a matrix
-		* @params -	index - row index that is needed for the matrix
+		* @param -	index - row index that is needed for the matrix
 		* @return -	rowData - array of data in the row at the index.
 		*				if the index is greater than row then returns an empty array.
 		**/
@@ -355,7 +355,7 @@ define([], function(){
 
 		/**
 		* sets a column of a Matrix
-		* @params -	index - index at which the column has to be set.
+		* @param -	index - index at which the column has to be set.
 		*       	col - column vector that has to be set at index.
 		* @return -	boolean value -	0 - not successful due to size mismatch
 		*							1 - successful
@@ -371,7 +371,7 @@ define([], function(){
 
 		/**
 		* sets a row of a Matrix
-		* @params -	index - index at which the row has to be set.
+		* @param -	index - index at which the row has to be set.
 		*       	row - row vector that has to be set at index.
 		* @return -	boolean value -	0 - not successful due to size mismatch
 		*							1 - successful
@@ -395,7 +395,7 @@ define([], function(){
 
 		/**
 		* print the matrix in either JavaScript 2D-array format or in Matlab Matrix format
-		* @params -	divID - the id of the div in which the matrix is to be printed
+		* @param -	divID - the id of the div in which the matrix is to be printed
 		*       	isJS - print matrix in JS (true) format or in Matlab (false) format
 		**/
 		print: function(/* string */ divID, /* boolean */ isJS){
@@ -411,7 +411,7 @@ define([], function(){
 
 		/**
 		* create HTML string in either JavaScript 2D-array format or in Matlab Matrix format
-		* @params -	isJS - print matrix in JS (true) format or in Matlab (false) format
+		* @param -	isJS - print matrix in JS (true) format or in Matlab (false) format
 		* @return -	html - returns the html string to be printed
 		**/
 		getHTML: function(isJS){
@@ -439,7 +439,7 @@ define([], function(){
 
 		/**
 		* swap row i and row j
-		* @params -	i - first index of the rows
+		* @param -	i - first index of the rows
 		*       	j - second index to swap the rows
 		* @return -	flag - values to tell whether swap was successful or not
 		*       		0 - there was an error, which is i and j were greater than
@@ -464,7 +464,7 @@ define([], function(){
 
 	/**
 	* validates the matrices for operations.
-	* @params -	a - First matrix on the left side of the operator.
+	* @param -	a - First matrix on the left side of the operator.
 	*       	b - Second matrix on the right side of operator.
 	* @return -	isValid - object which tells whether the matrices can be 
 	*				added subtracted and multiplied or not.
