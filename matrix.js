@@ -5,7 +5,7 @@ define([], function(){
 	/**
 	* adds the matrices
 	* @params -	a - matrix 1
-	* 			b - matrix 2
+	*       	b - matrix 2
 	* @return -	c - answer - a + b
 	**/
 	function addition(/* Matrix */ a, /* Matrix */ b){
@@ -24,7 +24,7 @@ define([], function(){
 	/**
 	* subtracts the matrices
 	* @params -	a - matrix 1
-	* 			b - matrix 2
+	*       	b - matrix 2
 	* @return -	c - answer - a - b
 	**/
 	function subtract(/* Matrix */ a, /* Matrix */ b){
@@ -44,7 +44,7 @@ define([], function(){
 	* multiplies the matrices
 	* requires that number of columns of a are equal to number of rows b
 	* @params -	a - matrix 1
-	* 			b - matrix 2
+	*       	b - matrix 2
 	* @return -	c - answer - a * b
 	**/
 	function multiply(/* Matrix */ a, /* Matrix */ b){
@@ -99,8 +99,8 @@ define([], function(){
 	* due to decomposition solution is calculated in two steps
 	* Ld = b, calculate d vector in this, then Ux = d calculate x in this.
 	* @params -	L - Lower triangle matrix with diagonals equal to 1
-	*			U - Upper triangle matrix
-	*			b - Right hand side vector of the equation Ax = b
+	*       	U - Upper triangle matrix
+	*       	b - Right hand side vector of the equation Ax = b
 	* @return -	x - solution vector calculated as per above steps
 	**/
 	function _solve(/* Matrix */ L, /* Matrix */ U, /* Matrix or col vector */ b){
@@ -133,9 +133,9 @@ define([], function(){
 	* equations from LU = A. Pivots are corrected if diagonal elements go below 0.01.
 	* @params -	a - Matrix whose inverse is to be calculated
 	* @return -	obj - a JSON object which holds -
-	*				L - Lower triangle matrix for the decomposition
-	*				U - Upper triangle matrix for the decomposition
-	*				pivots - row exchanges that were needed for the inverse calculation
+	*       	L - Lower triangle matrix for the decomposition
+	*       	U - Upper triangle matrix for the decomposition
+	*       	pivots - row exchanges that were needed for the inverse calculation
 	**/
 	function _LUdecomposition(/* Matrix */ a){
 		var L = Matrix.identity(a.rows);
@@ -176,7 +176,7 @@ define([], function(){
 	* finds the row which should be switched with the diagonal element of the matrix.
 	* calculated by finding maximum number after diagonal element which is to be swapped.
 	* @params -	a - matrix for which pivot is to swapped.
-	* 			index - index of the pivot element which is to be swapped.
+	*        	index - index of the pivot element which is to be swapped.
 	* @return -	returnIndex - new pivot index that is calculated. If all the
 	*				values are less than _epsilon value set at the top,
 	*				then index is returned which is the error case.
@@ -200,8 +200,8 @@ define([], function(){
 	* parameters sent.
 	* The parameters are defined on each function in the object
 	* @return -	rows - number of rows in the matrix
-	*			cols - number of columns in the matrix
-	*			m - the values in the matrix
+	*       	cols - number of columns in the matrix
+	*       	m - the values in the matrix
 	**/
 	function Matrix(){
 		var rows = Number.MIN_VALUE;
@@ -236,8 +236,9 @@ define([], function(){
 		* the value given by the user or Number.MIN_VALUE.
 		* Reason to initialize these values is to ensure that the size of the matrix
 		* is fixed.
-		* @params -	rows - number of rows
-		*			cols - number of columns
+		* @params -	_rows - number of rows
+		*       	_cols - number of columns
+		*       	initialization - a single value that will be used to initialize the matrix
 		**/
 		var _matrixThreeArgument = function(/* integer */ _rows, /* integer */ _cols, /* number*/ initialization){
 			var initialValue = !isNaN(initialization) ? initialization : Number.MIN_VALUE;
@@ -288,7 +289,7 @@ define([], function(){
 	/**
 	* creates a square matrix with all values holding same data.
 	* @params -	size - size of the square matrix
-	* 			value - single value that is to be added to each data point.
+	*       	value - single value that is to be added to each data point.
 	* @return -	Matrix - a matrix which is a square matrix.
 	**/
 	Matrix.square = function(/* integer */ size, /* number */ value){
@@ -355,7 +356,7 @@ define([], function(){
 		/**
 		* sets a column of a Matrix
 		* @params -	index - index at which the column has to be set.
-		*			col - column vector that has to be set at index.
+		*       	col - column vector that has to be set at index.
 		* @return -	boolean value -	0 - not successful due to size mismatch
 		*							1 - successful
 		**/
@@ -371,7 +372,7 @@ define([], function(){
 		/**
 		* sets a row of a Matrix
 		* @params -	index - index at which the row has to be set.
-		*			row - row vector that has to be set at index.
+		*       	row - row vector that has to be set at index.
 		* @return -	boolean value -	0 - not successful due to size mismatch
 		*							1 - successful
 		**/
@@ -395,7 +396,7 @@ define([], function(){
 		/**
 		* print the matrix in either JavaScript 2D-array format or in Matlab Matrix format
 		* @params -	divID - the id of the div in which the matrix is to be printed
-		*			isJS - print matrix in JS (true) format or in Matlab (false) format
+		*       	isJS - print matrix in JS (true) format or in Matlab (false) format
 		**/
 		print: function(/* string */ divID, /* boolean */ isJS){
 			var div = document.getElementById(divID);
@@ -439,11 +440,11 @@ define([], function(){
 		/**
 		* swap row i and row j
 		* @params -	i - first index of the rows
-		* 			j - second index to swap the rows
+		*       	j - second index to swap the rows
 		* @return -	flag - values to tell whether swap was successful or not
-		* 				0 - there was an error, which is i and j were greater than
+		*       		0 - there was an error, which is i and j were greater than
 		* 				the number of rows or i and j were less than 0.
-		*				1 - swap was successful.
+		*       		1 - swap was successful.
 		**/
 		swap: function(/* integer */ i, /* integer */ j){
 			var flag = 0;
@@ -464,9 +465,9 @@ define([], function(){
 	/**
 	* validates the matrices for operations.
 	* @params -	a - First matrix on the left side of the operator.
-	* 			b - Second matrix on the right side of operator.
+	*       	b - Second matrix on the right side of operator.
 	* @return -	isValid - object which tells whether the matrices can be 
-	*					added subtracted and multiplied or not.
+	*				added subtracted and multiplied or not.
 	**/
 	function _validateMatrices(/* Matrix */ a, /* Matrix */ b){
 		var isValid = {
