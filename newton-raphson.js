@@ -1,4 +1,4 @@
-define(["parser/parser", "matrix"], function(Parser, Matrix){
+define(["parser/parser", "./matrix"], function(Parser, Matrix){
 	// tracks if equations are in f(x) = 0 format or not
 	var equations = [];
 	var variables = [];
@@ -13,7 +13,10 @@ define(["parser/parser", "matrix"], function(Parser, Matrix){
 	* @param -	expressions - array of equations as strings or parser objects
 	**/
 	var _initialize = function(/* Array */ expressions){
-		for(var expression in expressions){
+		equations = [];
+		variables = [];
+		for(var index in expressions){
+			var expression = expressions[index];
 			var eq = {};
 			if(typeof(expression) == "string" && expression.indexOf("=") > -1){
 				var eqs = expression.split("=");
@@ -27,7 +30,7 @@ define(["parser/parser", "matrix"], function(Parser, Matrix){
 			} else if(typeof(expression) == "object" && expression.length == 2){
 				eq.lhs = expression[0];
 				eq.rhs = expression[1];
-			} else if(typeof(expression) == "object")
+			} else if(typeof(expression) == "object"){
 				eq.lhs = expression;
 				eq.rhs = 0;
 			}
@@ -50,15 +53,26 @@ define(["parser/parser", "matrix"], function(Parser, Matrix){
 		var X = _getInitialPoint();
 		fX = _calculateFunctionalValue(X);
 		var change = 1;
-		while(change < stoppingCriterion){
-			var jacobian = createJacobian(X);
-			var jacobian_inv = Matrix.operations.inv(jacobian);
-			var X_new = Matrix.operations.sub(X, Matrix.operations.mul(jacobian_inv, fX));
-			var fX_new = _calculateFunctoinalValue(X_new);
+		var iter = 0;
+		while(change > stoppingCriterion){
+			iter++;
+			var jacobian = _createJacobian(X);
+			// error handling if the jacobian is non invertible meaning
+			// system of equations is not solvable.
+			var jacobian_inv; var X_new;
+			try{
+				jacobian_inv = Matrix.operations.inv(jacobian);
+				X_new = Matrix.operations.sub(X, Matrix.operations.mul(jacobian_inv, fX));
+			} catch (e){
+				throw e;
+			}
+			var fX_new = _calculateFunctionalValue(X_new);
 			change = _calculateValueChange(fX_new, fX);
 			fX = fX_new;
 			X = X_new;
 		}
+
+		console.log("total iterations "+ iter);
 
 		return X;
 	};
@@ -70,8 +84,8 @@ define(["parser/parser", "matrix"], function(Parser, Matrix){
 	**/
 	var _getInitialPoint = function(){
 		var point = new Matrix(variables.length, 1, 0);
-		for(var variable in variables){
-			point.m[index++][0] = Math.random;
+		for(var index in variables){
+			point.m[index][0] = Math.random();
 		}
 
 		return point;
@@ -85,8 +99,9 @@ define(["parser/parser", "matrix"], function(Parser, Matrix){
 	var _calculateFunctionalValue = function(/* Matrix */ X){
 		var _fX = new Matrix(equations.length, 1, 0);
 		var index = 0;
-		for(var expression in equations)
-			_fX.m[index++][0] = _evaluateExpression(expression, X.m);
+		for(var i in equations){
+			_fX.m[index++][0] = _evaluateExpression(equations[i], X.m);
+		}
 		return _fX;
 	};
 
@@ -99,7 +114,7 @@ define(["parser/parser", "matrix"], function(Parser, Matrix){
 	**/
 	var _calculateValueChange = function(/* Matrix */ fX, /* Matrix */ fX_new){
 		var result = Matrix.operations.sub(fX_new, fX);
-		var numberOfEqs = equation.length;
+		var numberOfEqs = equations.length;
 		var change = Number.MIN_VALUE;
 		for(var i = 0; i < numberOfEqs; i++){
 			var val = Math.abs(result.m[i][0]);
@@ -121,12 +136,13 @@ define(["parser/parser", "matrix"], function(Parser, Matrix){
 		var jacobian = new Matrix(noOfVars, noOfVars, 0);
 		var eqCount = 0;
 
-		for(var expression in equations){
+		for(var index in equations){
+			var expression = equations[index];
 			for(var i = 0; i < noOfVars; i++){
-				if(_isPresent(expression, variables[i]){
+				if(_isPresent(expression, variables[i])){
 					var XDelta = _addDelta(X, i);
 					var fXDelta = _evaluateExpression(expression, XDelta.m);
-					jacobian.m[eqCount][i] = (fXDelta - fX[eqCount])/epsilon;
+					jacobian.m[eqCount][i] = (fXDelta - fX.m[eqCount][0])/epsilon;
 				}
 			}
 			eqCount++;
@@ -170,8 +186,8 @@ define(["parser/parser", "matrix"], function(Parser, Matrix){
 	* @return - boolean value whether the variable is present or not.
 	**/
 	var _isPresent = function(/* object */ expression, /* string */ variable){
-		return expression.lhs.variables().indexOf(variable) >= 0 &&
-				(!expression.rhs || expression.rhs.variables().indexOf(variable) >= 0);
+		return expression.lhs.variables().indexOf(variable) >= 0 ||
+				(expression.rhs && expression.rhs.variables().indexOf(variable) >= 0);
 	};
 
 	/**
@@ -183,8 +199,10 @@ define(["parser/parser", "matrix"], function(Parser, Matrix){
 	var _getValueObject = function(/* Array */ point){
 		var obj = {};
 		var index = 0;
-		for(var variable in variables)
-			obj.variable = point[index++];
+		for(var index in variables){
+			var variable = variables[index];
+			obj[variable] = point[index++];
+		}
 
 		return obj;
 	};
@@ -195,9 +213,11 @@ define(["parser/parser", "matrix"], function(Parser, Matrix){
 	**/
 	var _addVariables = function(/* object */ expression){
 		var update = function(variableArray){
-			for(variable in variableArray)
+			for(var index in variableArray){
+				var variable = variableArray[index];
 				if(variables.indexOf(variable) < 0)
 					variables.push(variable);
+			}
 		};
 		update(expression.lhs.variables());
 		if(expression.rhs) update(expression.rhs.variables());
@@ -211,13 +231,13 @@ define(["parser/parser", "matrix"], function(Parser, Matrix){
 	**/
 	var Solver = function(expressions){
 		_initialize(expressions);
+		this.xvars = variables;
+		this.eqs = equations;
+		this.result = fX;
 	};
 
 	Solver.prototype = {
-		solve: solve,
-		xvars: variables,
-		eqs: equations,
-		result: fX
+		solve: solve
 	};
 
 	return Solver;

@@ -6,8 +6,9 @@ define([
 	"dojo/NodeList-dom",
 	"dojo/_base/array",
 	"dojo/dom-construct",
-	"./matrix"
-], function(ready, dom, on, query, nodeList, array, domConstruct, Matrix){
+	"./matrix",
+	"./newton-raphson"
+], function(ready, dom, on, query, nodeList, array, domConstruct, Matrix, Solver){
 	ready(function(){
 		var domIDs = {
 			randomCheckbox : 'randomMatrices',
@@ -18,7 +19,9 @@ define([
 			print: 'printMatrices',
 			printRadio: 'print',
 			operationRadio: 'operation',
-			result: 'result-wrapper'
+			result: 'result-wrapper',
+			solveButton: 'solveButton',
+			equations: 'equations'
 		};
 		var random = dom.byId(domIDs.randomCheckbox);
 		var matA = dom.byId(domIDs.matA);
@@ -32,6 +35,8 @@ define([
 		var operator = "add";
 		var format = "js";
 		var operatorTitle = "A + B";
+		var solveButton = dom.byId(domIDs.solveButton);
+		var equation = dom.byId(domIDs.equations);
 
 		on(random, 'change', function(){
 			if(random.checked){
@@ -108,6 +113,23 @@ define([
 			html += printMatrix(_matR, format, operatorTitle);
 			domConstruct.place("<div class = 'result'>" + html + "</div>", domIDs.result, "first");
 		});
+
+		on(solveButton, 'click', function(){
+			html = "<b>Solution</b><br/>";
+			var _equations = _parseEquations(equation.value);
+			var point;
+			var solver;
+			try{
+				s = new Solver(_equations);
+				point = s.solve();
+			}catch(e){
+				console.log(e);
+			}
+			html += "Equations - " + equations.value + "<br/>";
+			html += "Params - " + JSON.stringify(s.xvars) + "<br/>";
+			html += "Solutions - " + JSON.stringify(point.m) + "<br/>";
+			domConstruct.place("<div class = 'result'>" + html + "</div>", domIDs.result, "first");
+		});
 	});
 	var createRandomMatrix = function(size){
 		var a = Matrix.square(size, 0);
@@ -148,5 +170,20 @@ define([
 		}
 
 		return data;
-	}
+	};
+
+	var _parseEquations = function(dataString){
+		var equations = [];
+
+		dataString = dataString.replace(/(\r\n|\n|\r)/gm, "||");
+		equations = dataString.split("||");
+		var length = equations.length;
+		for(var i = 0; i < length; i++){
+			if(equations[i] == "" || equations[i].indexOf("=") < 0){
+				equations.splice(i, 1);
+			}
+		}
+
+		return equations;
+	};
 });
