@@ -459,6 +459,52 @@ define([], function(){
 
 			flag = 1;
 			return flag;
+		},
+
+		/**
+		* get the matrix value for a particular row and column
+		* @param -	row - row of the matrix
+		*       	col - col of the matrix
+		* @return -	value - return value of the matrix
+		**/
+		get: function(/* integer */ row, /* integer */ col){
+			return this.m[row][col];
+		},
+
+		/**
+		* set the matrix value for a particular row and column
+		* @param -	row - row of the matrix
+		*       	col - column of the matrix
+		*       	value - value to set
+		**/
+		set: function(/* integer */ row, /* integer */ col, /* integer */ value){
+			this.m[row][col] = value;
+		},
+
+		/**
+		* check whether a particular row number is a valid index for a matrix
+		* @param -	index - row of the matrix
+		* @return -	boolean - whether a index is a valid row index or not
+		**/
+		isValidRowIndex: function(/* integer */ index){
+			return index >= 0 && index < this.rows;
+		},
+
+		/**
+		* check whether a particular column number is a valid index for a matrix
+		* @param -	index - column of the matrix
+		* @return -	boolean - whether a index is a valid column index or not
+		**/
+		isValidColIndex: function(/* integer */ index){
+			return index >= 0 && index < this.cols;
+		},
+
+		/**
+		* gets the complete 2D matrix
+		* @return -	2D array - the matrix
+		**/
+		getMatrix: function(){
+			return this.m;
 		}
 	};
 

@@ -85,7 +85,7 @@ define(["parser/parser", "./matrix"], function(Parser, Matrix){
 	var _getInitialPoint = function(){
 		var point = new Matrix(variables.length, 1, 0);
 		for(var index in variables){
-			point.m[index][0] = Math.random();
+			point.set(index, 0, Math.random());
 		}
 
 		return point;
@@ -100,7 +100,7 @@ define(["parser/parser", "./matrix"], function(Parser, Matrix){
 		var _fX = new Matrix(equations.length, 1, 0);
 		var index = 0;
 		for(var i in equations){
-			_fX.m[index++][0] = _evaluateExpression(equations[i], X.m);
+			_fX.set(index++, 0, _evaluateExpression(equations[i], X.m));
 		}
 		return _fX;
 	};
@@ -117,7 +117,7 @@ define(["parser/parser", "./matrix"], function(Parser, Matrix){
 		var numberOfEqs = equations.length;
 		var change = Number.MIN_VALUE;
 		for(var i = 0; i < numberOfEqs; i++){
-			var val = Math.abs(result.m[i][0]);
+			var val = Math.abs(result.get(i, 0));
 			if(val > change)
 				change = val;
 		}
@@ -142,7 +142,7 @@ define(["parser/parser", "./matrix"], function(Parser, Matrix){
 				if(_isPresent(expression, variables[i])){
 					var XDelta = _addDelta(X, i);
 					var fXDelta = _evaluateExpression(expression, XDelta.m);
-					jacobian.m[eqCount][i] = (fXDelta - fX.m[eqCount][0])/epsilon;
+					jacobian.set(eqCount, i, ((fXDelta - fX.get(eqCount, 0))/epsilon));
 				}
 			}
 			eqCount++;
@@ -160,7 +160,7 @@ define(["parser/parser", "./matrix"], function(Parser, Matrix){
 	**/
 	var _addDelta = function(/* Array */ X, /* number */ index){
 		var XDelta = Matrix.copy(X);
-		XDelta.m[index][0] += epsilon;
+		XDelta.set(index, 0, (XDelta.get(index, 0) +epsilon));
 		return XDelta;
 	};
 
@@ -221,6 +221,7 @@ define(["parser/parser", "./matrix"], function(Parser, Matrix){
 		};
 		update(expression.lhs.variables());
 		if(expression.rhs) update(expression.rhs.variables());
+		console.log(variables);
 	};
 
 	/**
