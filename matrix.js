@@ -505,6 +505,17 @@ define([], function(){
 		**/
 		getMatrix: function(){
 			return this.m;
+		},
+
+		/**
+		* fix the values of the matrix to a fixed decimal place
+		**/
+		toFixed: function(precision){
+			for(var i = 0; i < this.rows; i++){
+				for(var j = 0; j < this.cols; j++){
+					this.m[i][j] = Number.parseFloat(this.m[i][j].toFixed(precision));
+				}
+			}
 		}
 	};
 

@@ -71,8 +71,9 @@ define(["parser/parser", "./matrix"], function(Parser, Matrix){
 			fX = fX_new;
 			X = X_new;
 		}
-
+		X.toFixed(12);
 		console.log("total iterations "+ iter);
+		console.log("solution ", X);
 
 		return X;
 	};
