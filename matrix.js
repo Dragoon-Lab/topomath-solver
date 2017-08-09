@@ -1,6 +1,6 @@
 define([], function(){
 	// this is the value less than which we will try to find a different pivot
-	var _epsilon = 0.01;
+	var _epsilon = 10e-6;
 
 	/**
 	* adds the matrices
@@ -80,7 +80,6 @@ define([], function(){
 		var decomposition = _LUdecomposition(a);
 		var I = Matrix.identity(a.rows);
 		var pivot;
-		console.log(a, " matrix ", decomposition);
 		for(pivot in decomposition.pivots){
 			var temp = decomposition.pivots[pivot].split("|");
 			I.swap(temp[0], temp[1]);

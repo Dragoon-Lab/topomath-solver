@@ -222,7 +222,6 @@ define(["parser/parser", "./matrix"], function(Parser, Matrix){
 		};
 		update(expression.lhs.variables());
 		if(expression.rhs) update(expression.rhs.variables());
-		console.log(variables);
 	};
 
 	/**
