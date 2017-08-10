@@ -53,10 +53,19 @@
 			width: 100%;
 			overflow-x: hidden;
 		}
+		.matrix-demo{
+			width: 50%;
+			float: left;
+		}
+		.solver-demo{
+			width: 50%;
+			float: right;
+		}
 	</style>
 </head>
 <body>
 <div id = "main">
+<div class = "matrix-demo">
 	<form id = "">
 		<div class = "fieldgroup">
 			<label for = "matrixA">Matrix A</label>
@@ -119,6 +128,20 @@
 		</div>
 	</form>
 </div>
+<div class = "solver-demo">
+	<form>
+		<div class = "fieldgroup">
+			<label for = "equations">Equations</label>
+			<textarea id = "equations" name = "Equations" rows = "10" cols = "50" data-dojo-type = "dijit/form/TextArea"></textarea>
+			<p>Enter the equations, each line has should have one equation to solve.</p>
+		</div>
+		<div class = "fieldgroup">
+			<input type = "button" value = "Solve" id = "solveButton"/>
+		</div>
+	</form>
+</div>
+</div>
+<div style="clear:both"></div>
 <div id = "result-wrapper"></div>
 </body>
 </html>

@@ -1,6 +1,6 @@
 define([], function(){
 	// this is the value less than which we will try to find a different pivot
-	var _epsilon = 0.01;
+	var _epsilon = 10e-6;
 
 	/**
 	* adds the matrices
@@ -80,7 +80,6 @@ define([], function(){
 		var decomposition = _LUdecomposition(a);
 		var I = Matrix.identity(a.rows);
 		var pivot;
-		console.log(a, " matrix ", decomposition);
 		for(pivot in decomposition.pivots){
 			var temp = decomposition.pivots[pivot].split("|");
 			I.swap(temp[0], temp[1]);
@@ -459,6 +458,63 @@ define([], function(){
 
 			flag = 1;
 			return flag;
+		},
+
+		/**
+		* get the matrix value for a particular row and column
+		* @param -	row - row of the matrix
+		*       	col - col of the matrix
+		* @return -	value - return value of the matrix
+		**/
+		get: function(/* integer */ row, /* integer */ col){
+			return this.m[row][col];
+		},
+
+		/**
+		* set the matrix value for a particular row and column
+		* @param -	row - row of the matrix
+		*       	col - column of the matrix
+		*       	value - value to set
+		**/
+		set: function(/* integer */ row, /* integer */ col, /* integer */ value){
+			this.m[row][col] = value;
+		},
+
+		/**
+		* check whether a particular row number is a valid index for a matrix
+		* @param -	index - row of the matrix
+		* @return -	boolean - whether a index is a valid row index or not
+		**/
+		isValidRowIndex: function(/* integer */ index){
+			return index >= 0 && index < this.rows;
+		},
+
+		/**
+		* check whether a particular column number is a valid index for a matrix
+		* @param -	index - column of the matrix
+		* @return -	boolean - whether a index is a valid column index or not
+		**/
+		isValidColIndex: function(/* integer */ index){
+			return index >= 0 && index < this.cols;
+		},
+
+		/**
+		* gets the complete 2D matrix
+		* @return -	2D array - the matrix
+		**/
+		getMatrix: function(){
+			return this.m;
+		},
+
+		/**
+		* fix the values of the matrix to a fixed decimal place
+		**/
+		toFixed: function(precision){
+			for(var i = 0; i < this.rows; i++){
+				for(var j = 0; j < this.cols; j++){
+					this.m[i][j] = Number.parseFloat(this.m[i][j].toFixed(precision));
+				}
+			}
 		}
 	};
 
