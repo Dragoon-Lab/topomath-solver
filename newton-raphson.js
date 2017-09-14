@@ -4,6 +4,7 @@ define(["parser/parser", "./matrix"], function(Parser, Matrix){
 	var variables = [];
 	var epsilon = 1e-6;
 	var stoppingCriterion = 1e-3;
+	var precision = 8;
 	var fX;
 	/**
 	* Initialize the system of equations. Checks if an equation is provided
@@ -57,12 +58,15 @@ define(["parser/parser", "./matrix"], function(Parser, Matrix){
 		while(change > stoppingCriterion){
 			iter++;
 			var jacobian = _createJacobian(X);
+			jacobian.toFixed(precision);
 			// error handling if the jacobian is non invertible meaning
 			// system of equations is not solvable.
 			var jacobian_inv; var X_new;
 			try{
 				jacobian_inv = Matrix.operations.inv(jacobian);
+				jacobian_inv.toFixed(precision);
 				X_new = Matrix.operations.sub(X, Matrix.operations.mul(jacobian_inv, fX));
+				X_new.toFixed(precision);
 			} catch (e){
 				throw e;
 			}
@@ -71,7 +75,7 @@ define(["parser/parser", "./matrix"], function(Parser, Matrix){
 			fX = fX_new;
 			X = X_new;
 		}
-		X.toFixed(12);
+		X.toFixed(precision);
 		console.log("total iterations "+ iter);
 		console.log("solution ", X);
 
