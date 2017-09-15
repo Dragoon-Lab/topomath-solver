@@ -4,7 +4,9 @@ define(["parser/parser", "./matrix"], function(Parser, Matrix){
 	var variables = [];
 	var epsilon = 1e-6;
 	var stoppingCriterion = 1e-3;
-	var precision = 8;
+	var precision = 12;
+	var n = 1;
+	var m = 0;
 	var fX;
 	/**
 	* Initialize the system of equations. Checks if an equation is provided
@@ -52,21 +54,19 @@ define(["parser/parser", "./matrix"], function(Parser, Matrix){
 		// we can solve.
 
 		var X = _getInitialPoint();
+		console.log("starting point ", X);
 		fX = _calculateFunctionalValue(X);
 		var change = 1;
 		var iter = 0;
 		while(change > stoppingCriterion){
 			iter++;
 			var jacobian = _createJacobian(X);
-			jacobian.toFixed(precision);
 			// error handling if the jacobian is non invertible meaning
 			// system of equations is not solvable.
 			var jacobian_inv; var X_new;
 			try{
 				jacobian_inv = Matrix.operations.inv(jacobian);
-				jacobian_inv.toFixed(precision);
 				X_new = Matrix.operations.sub(X, Matrix.operations.mul(jacobian_inv, fX));
-				X_new.toFixed(precision);
 			} catch (e){
 				throw e;
 			}
@@ -90,7 +90,8 @@ define(["parser/parser", "./matrix"], function(Parser, Matrix){
 	var _getInitialPoint = function(){
 		var point = new Matrix(variables.length, 1, 0);
 		for(var index in variables){
-			point.set(index, 0, Math.random());
+			var value = Math.random()*n + m;
+			point.set(index, 0, value);
 		}
 
 		return point;
