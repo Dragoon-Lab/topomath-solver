@@ -1,4 +1,4 @@
-define([], function(){
+define(['./error-messages'], function(messages){
 	// this is the value less than which we will try to find a different pivot
 	var _epsilon = 10e-6;
 
@@ -11,7 +11,10 @@ define([], function(){
 	function addition(/* Matrix */ a, /* Matrix */ b){
 		var isValid = _validateMatrices(a, b);
 		if(!isValid.add)
-			throw new Error("Matrices can not be added as dimensions do not match");
+			throw {
+				type: "size.mismatch",
+				message: messages.get("size.mismatch")
+			};
 
 		var c = new Matrix(a.rows, a.cols);
 		for(var i = 0; i < a.rows; i++)
@@ -30,7 +33,10 @@ define([], function(){
 	function subtract(/* Matrix */ a, /* Matrix */ b){
 		var isValid = _validateMatrices(a, b);
 		if(!isValid.add)
-			throw new Error("Matrices can not be subtracted as dimensions do not match");
+			throw {
+				type: "size.mismatch",
+				message: messages.get("size.mismatch")
+			};
 
 		var c = new Matrix(a.rows, a.cols);
 		for(var i = 0; i < a.rows; i++)
@@ -50,7 +56,10 @@ define([], function(){
 	function multiply(/* Matrix */ a, /* Matrix */ b){
 		var isValid = _validateMatrices(a, b);
 		if(!isValid.mul)
-			throw new Error("Matrices can not be multiplied as dimensions do not match");
+			throw {
+				type: "size.mismatch",
+				message: messages.get("size.mismatch")
+			};
 
 		var c = new Matrix(a.rows, b.cols, 0);
 		for(var i = 0; i < a.rows; i++)
@@ -74,7 +83,10 @@ define([], function(){
 		var isValid = _validateMatrices(a);
 
 		if(!isValid.inv)
-			throw new Error("Matrix can not be inverted as it is not a square Matrix");
+			throw {
+				type: "decomposition",
+				message: messages.get("decomposition");
+			};
 
 		var c = new Matrix(a.rows, a.cols, 0);
 		var decomposition = _LUdecomposition(a);
@@ -153,7 +165,10 @@ define([], function(){
 			} else {
 				var pivot = _pivot(U, i);
 				if(pivot == i)
-					throw new Error("Singular matrix, LU decomposition not feasible");
+					throw {
+						type: "decomposition",
+						message: messages.get("decomposition");
+					};
 				pivots.push(i + "|" + pivot);
 				U.swap(i, pivot);
 				L.swap(i, pivot);
@@ -213,19 +228,28 @@ define([], function(){
 		**/
 		var _matrixOneArgument = function(/* 2D array*/ data){
 			if(!data)
-				throw new Error("No data provided to create the matrix");
+				throw {
+					type: "matrix.missing",
+					message: messages.get("matrix.missing")
+				};
 			rows = data.length;
 
 			// although this essentially means the same check as above
 			// keeping it so that we can be rest assured
 			// that data is not empty
 			if(this.rows == 0)
-				throw new Error("No data provided to create the matrix");
+				throw {
+					type: "matrix.missing",
+					message: messages.get("matrix.missing")
+				};
 
 			cols = data[0].length;
 			for(var i = 0; i < this.rows; i++)
 				if(data[i].length !== this.cols)
-					throw new Error("Matrix has varying number of columns");
+					throw {
+						type: "matrix.varying.size",
+						message: messages.get("matrix.varying.size")
+					};
 
 			m = data;
 		}
@@ -265,8 +289,10 @@ define([], function(){
 				_matrixThreeArgument(arguments[0], arguments[1], arguments[2]);
 				break;
 			default:
-				throw new Error("Wrong initialization of Matrix class");
-				break;
+				throw {
+					type: "matrix.initialization.incorrect",
+					message: messages.get("matrix.initialization.incorrect");
+				};
 		}
 
 		this.rows = rows;
