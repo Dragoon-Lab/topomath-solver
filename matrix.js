@@ -74,7 +74,10 @@ define([], function(){
 		var isValid = _validateMatrices(a);
 
 		if(!isValid.inv)
-			throw new Error("Matrix can not be inverted as it is not a square Matrix");
+			throw {
+				type: "decomposition",
+				message: messages.get("decomposition")
+			};
 
 		var c = new Matrix(a.rows, a.cols, 0);
 		var decomposition = _LUdecomposition(a);
@@ -153,7 +156,10 @@ define([], function(){
 			} else {
 				var pivot = _pivot(U, i);
 				if(pivot == i)
-					throw new Error("Singular matrix, LU decomposition not feasible");
+					throw {
+						type: "decomposition",
+						message: messages.get("decomposition")
+					};
 				pivots.push(i + "|" + pivot);
 				U.swap(i, pivot);
 				L.swap(i, pivot);
@@ -265,7 +271,10 @@ define([], function(){
 				_matrixThreeArgument(arguments[0], arguments[1], arguments[2]);
 				break;
 			default:
-				throw new Error("Wrong initialization of Matrix class");
+				throw {
+					type: "matrix.initialization.incorrect",
+					message: messages.get("matrix.initialization.incorrect")
+				};
 				break;
 		}
 
