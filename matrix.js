@@ -1,4 +1,4 @@
-define(["./error-messages"], function(messages){
+define(['./error-messages'], function(messages){
 	// this is the value less than which we will try to find a different pivot
 	var _epsilon = 10e-6;
 
@@ -11,7 +11,10 @@ define(["./error-messages"], function(messages){
 	function addition(/* Matrix */ a, /* Matrix */ b){
 		var isValid = _validateMatrices(a, b);
 		if(!isValid.add)
-			throw new Error("Matrices can not be added as dimensions do not match");
+			throw {
+				type: "size.mismatch",
+				message: messages.get("size.mismatch")
+			};
 
 		var c = new Matrix(a.rows, a.cols);
 		for(var i = 0; i < a.rows; i++)
@@ -30,7 +33,10 @@ define(["./error-messages"], function(messages){
 	function subtract(/* Matrix */ a, /* Matrix */ b){
 		var isValid = _validateMatrices(a, b);
 		if(!isValid.add)
-			throw new Error("Matrices can not be subtracted as dimensions do not match");
+			throw {
+				type: "size.mismatch",
+				message: messages.get("size.mismatch")
+			};
 
 		var c = new Matrix(a.rows, a.cols);
 		for(var i = 0; i < a.rows; i++)
@@ -50,7 +56,10 @@ define(["./error-messages"], function(messages){
 	function multiply(/* Matrix */ a, /* Matrix */ b){
 		var isValid = _validateMatrices(a, b);
 		if(!isValid.mul)
-			throw new Error("Matrices can not be multiplied as dimensions do not match");
+			throw {
+				type: "size.mismatch",
+				message: messages.get("size.mismatch")
+			};
 
 		var c = new Matrix(a.rows, b.cols, 0);
 		for(var i = 0; i < a.rows; i++)
@@ -241,19 +250,28 @@ define(["./error-messages"], function(messages){
 		**/
 		var _matrixOneArgument = function(/* 2D array*/ data){
 			if(!data)
-				throw new Error("No data provided to create the matrix");
+				throw {
+					type: "matrix.missing",
+					message: messages.get("matrix.missing")
+				};
 			rows = data.length;
 
 			// although this essentially means the same check as above
 			// keeping it so that we can be rest assured
 			// that data is not empty
 			if(this.rows == 0)
-				throw new Error("No data provided to create the matrix");
+				throw {
+					type: "matrix.missing",
+					message: messages.get("matrix.missing")
+				};
 
 			cols = data[0].length;
 			for(var i = 0; i < this.rows; i++)
 				if(data[i].length !== this.cols)
-					throw new Error("Matrix has varying number of columns");
+					throw {
+						type: "matrix.varying.size",
+						message: messages.get("matrix.varying.size")
+					};
 
 			m = data;
 		}

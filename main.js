@@ -103,7 +103,11 @@ define([
 						_throwError("No Matrix B provided");
 				}
 			}
-			_matR = Matrix.operations[operator](_matA, _matB);
+			try {
+				_matR = Matrix.operations[operator](_matA, _matB);
+			} catch (e){
+				_throwError(e.message);
+			}
 
 			var html = "";
 			if(doPrint){
@@ -125,7 +129,6 @@ define([
 				s = new Solver(_equations);
 				point = s.solve();
 			}catch(e){
-				console.error(e);
 				_throwError(e.message);
 			}
 			html += "Equations - " + equations.value + "<br/>";
