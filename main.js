@@ -84,6 +84,7 @@ define([
 		});
 
 		on(button, 'click', function(){
+			_clearError();
 			var _matA; var _matB; var _matR;
 			if(random.checked){
 				var size = Number.parseInt(matSize.value) || 5;
@@ -115,15 +116,17 @@ define([
 		});
 
 		on(solveButton, 'click', function(){
+			_clearError();
 			html = "<b>Solution</b><br/>";
 			var _equations = _parseEquations(equation.value);
 			var point;
-			var solver;
+			var s;
 			try{
 				s = new Solver(_equations);
 				point = s.solve();
 			}catch(e){
-				console.log(e);
+				console.error(e);
+				_throwError(e.message);
 			}
 			html += "Equations - " + equations.value + "<br/>";
 			html += "Params - " + JSON.stringify(s.xvars) + "<br/>";
@@ -148,8 +151,13 @@ define([
 
 	var _throwError = function(message){
 		var _errorDiv = dom.byId("errorMessage");
-		dom.html = message;
-		throw new Error(message);
+		_errorDiv.innerHTML = message;
+		throw Error(message);
+	};
+
+	var _clearError = function(){
+		var _errorDiv = dom.byId("errorMessage");
+		_errorDiv.innerHTML = "";
 	};
 
 	var _parseValues = function(dataString){

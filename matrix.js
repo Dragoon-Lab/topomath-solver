@@ -1,4 +1,4 @@
-define([], function(){
+define(["./error-messages"], function(messages){
 	// this is the value less than which we will try to find a different pivot
 	var _epsilon = 10e-6;
 
@@ -92,6 +92,8 @@ define([], function(){
 			var col = _solve(decomposition.L, decomposition.U, I.getColumn(i));
 			c.setColumn(i, col);
 		}
+		_checkForInf(c);
+		_checkForNaN(c);
 
 		return c;
 	}
@@ -198,6 +200,26 @@ define([], function(){
 		}
 
 		return returnIndex;
+	}
+
+	function _checkForInf(/* Matrix */ a){
+		for(var i = 0; i < a.rows; i++)
+			for(var j = 0; j < a.cols; j++)
+				if(!isFinite(a.m[i][j]))
+					throw {
+						type: "decomposition",
+						message: messages.get("decomposition")
+					};
+	}
+
+	function _checkForNaN(/* Matrix */ a){
+		for(var i = 0; i < a.rows; i++)
+			for(var j = 0; j < a.cols; j++)
+				if(isNaN(a.m[i][j]))
+					throw {
+						type: "decomposition",
+						message: messages.get("decomposition")
+					};
 	}
 
 	/**
