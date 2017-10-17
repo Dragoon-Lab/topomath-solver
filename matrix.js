@@ -85,7 +85,7 @@ define(['./error-messages'], function(messages){
 		if(!isValid.inv)
 			throw {
 				type: "decomposition",
-				message: messages.get("decomposition");
+				message: messages.get("decomposition")
 			};
 
 		var c = new Matrix(a.rows, a.cols, 0);
@@ -101,6 +101,8 @@ define(['./error-messages'], function(messages){
 			var col = _solve(decomposition.L, decomposition.U, I.getColumn(i));
 			c.setColumn(i, col);
 		}
+		_checkForInf(c);
+		_checkForNaN(c);
 
 		return c;
 	}
@@ -167,7 +169,7 @@ define(['./error-messages'], function(messages){
 				if(pivot == i)
 					throw {
 						type: "decomposition",
-						message: messages.get("decomposition");
+						message: messages.get("decomposition")
 					};
 				pivots.push(i + "|" + pivot);
 				U.swap(i, pivot);
@@ -207,6 +209,26 @@ define(['./error-messages'], function(messages){
 		}
 
 		return returnIndex;
+	}
+
+	function _checkForInf(/* Matrix */ a){
+		for(var i = 0; i < a.rows; i++)
+			for(var j = 0; j < a.cols; j++)
+				if(!isFinite(a.m[i][j]))
+					throw {
+						type: "decomposition",
+						message: messages.get("decomposition")
+					};
+	}
+
+	function _checkForNaN(/* Matrix */ a){
+		for(var i = 0; i < a.rows; i++)
+			for(var j = 0; j < a.cols; j++)
+				if(isNaN(a.m[i][j]))
+					throw {
+						type: "decomposition",
+						message: messages.get("decomposition")
+					};
 	}
 
 	/**
@@ -291,8 +313,9 @@ define(['./error-messages'], function(messages){
 			default:
 				throw {
 					type: "matrix.initialization.incorrect",
-					message: messages.get("matrix.initialization.incorrect");
+					message: messages.get("matrix.initialization.incorrect")
 				};
+				break;
 		}
 
 		this.rows = rows;

@@ -133,7 +133,7 @@
 		<div class = "fieldgroup">
 			<label for = "equations">Equations</label>
 			<textarea id = "equations" name = "Equations" rows = "10" cols = "50" data-dojo-type = "dijit/form/TextArea"></textarea>
-			<p>Enter the equations, each line has should have one equation to solve.</p>
+			<p>Enter the equations, each line has should have one equation to solve. Please enter 2x + y as 2*x + y.</p>
 		</div>
 		<div class = "fieldgroup">
 			<input type = "button" value = "Solve" id = "solveButton"/>
@@ -142,6 +142,7 @@
 </div>
 </div>
 <div style="clear:both"></div>
+<div id = "errorMessage" style = "color: red; weight: bold"></div>
 <div id = "result-wrapper"></div>
 </body>
 </html>

@@ -1,4 +1,4 @@
-define(["parser/parser", "./matrix"], function(Parser, Matrix){
+define(["parser/parser", "./matrix", "./error-messages"], function(Parser, Matrix, messages){
 	// tracks if equations are in f(x) = 0 format or not
 	var equations = [];
 	var variables = [];
@@ -24,7 +24,10 @@ define(["parser/parser", "./matrix"], function(Parser, Matrix){
 			if(typeof(expression) == "string" && expression.indexOf("=") > -1){
 				var eqs = expression.split("=");
 				if(eqs.length > 2)
-					throw new Error("Equations provided are not in correct format, they have more than 1 equal to sign");
+					throw {
+						type: "equation.incorrect.format",
+						message: messages.get("equation.incorrect.format")
+					};
 				eq.lhs = Parser.parse(eqs[0]);
 				eq.rhs = Parser.parse(eqs[1]);
 			} else if(typeof(expression) == "string"){
@@ -49,7 +52,10 @@ define(["parser/parser", "./matrix"], function(Parser, Matrix){
 	**/
 	var solve = function(){
 		if(equations.length !== variables.length)
-			throw new Error("system of equations can not be solved as number of equations are different from number of variables");
+			throw {
+				type: "variable.mismatch",
+				message: messages.get("variable.mismatch")
+			};
 		// TODO: handle the case where equations are more. Need to find a subset that
 		// we can solve.
 
