@@ -4,6 +4,9 @@ define(["parser/parser", "./matrix"], function(Parser, Matrix){
 	var variables = [];
 	var epsilon = 1e-6;
 	var stoppingCriterion = 1e-3;
+	var precision = 12;
+	var n = 1;
+	var m = 0;
 	var fX;
 	/**
 	* Initialize the system of equations. Checks if an equation is provided
@@ -51,6 +54,7 @@ define(["parser/parser", "./matrix"], function(Parser, Matrix){
 		// we can solve.
 
 		var X = _getInitialPoint();
+		console.log("starting point ", X);
 		fX = _calculateFunctionalValue(X);
 		var change = 1;
 		var iter = 0;
@@ -71,7 +75,7 @@ define(["parser/parser", "./matrix"], function(Parser, Matrix){
 			fX = fX_new;
 			X = X_new;
 		}
-		X.toFixed(12);
+		X.toFixed(precision);
 		console.log("total iterations "+ iter);
 		console.log("solution ", X);
 
@@ -86,7 +90,8 @@ define(["parser/parser", "./matrix"], function(Parser, Matrix){
 	var _getInitialPoint = function(){
 		var point = new Matrix(variables.length, 1, 0);
 		for(var index in variables){
-			point.set(index, 0, Math.random());
+			var value = Math.random()*n + m;
+			point.set(index, 0, value);
 		}
 
 		return point;
