@@ -32,17 +32,25 @@ define(["parser/parser", "./matrix", "./error-messages"], function(Parser, Matri
 				eq.rhs = Parser.parse(eqs[1]);
 			} else if(typeof(expression) == "string"){
 				eq.lhs = Parser.parse(expression);
-				eq.rhs = 0;
+				eq.rhs = Parser.parse(0);
 			} else if(typeof(expression) == "object" && expression.length == 2){
 				eq.lhs = expression[0];
 				eq.rhs = expression[1];
 			} else if(typeof(expression) == "object"){
 				eq.lhs = expression;
-				eq.rhs = 0;
+				eq.rhs = Parser.parse(0);
 			}
-			equations.push(eq);
-			_addVariables(eq);
+			if(_preprocessing(eq)){
+				equations.push(eq);
+				_addVariables(eq);
+			}
 		}
+
+		if(variables.length == 0)
+			throw {
+				type: "no.variables",
+				message: messages.get("no.variables")
+			};
 	};
 
 	/**
@@ -233,6 +241,22 @@ define(["parser/parser", "./matrix", "./error-messages"], function(Parser, Matri
 		};
 		update(expression.lhs.variables());
 		if(expression.rhs) update(expression.rhs.variables());
+	};
+
+	/**
+	* Preprocessing of equations will be part of this function. Currently preprocessing
+	* involves removing that equation which does not have any variable in it. 2 = 2 sort
+	* of equations.
+	* @param -	expression - equation which is to checked
+	* @return -	isValid - boolean to provide whether expression is correct or not.
+	**/
+	var _preprocessing = function(/* object */ expression){
+		var isValid = true;
+		if((!expression.lhs || expression.lhs.variables().length == 0) &&
+			(!expression.rhs || expression.rhs.variables().length == 0))
+			isValid = false;
+
+		return isValid;
 	};
 
 	/**
