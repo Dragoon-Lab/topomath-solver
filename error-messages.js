@@ -8,7 +8,8 @@ define([], function(){
 		"size.mismatch.rows": "Rows do not match",
 		"size.mismatch.cols": "Columns do not match",
 		"equation.incorrect.format": "Equations provided in an incorrect format",
-		"variable.mismatch": "Number of equations do not match the number of variables"
+		"variable.mismatch": "Number of equations do not match the number of variables",
+		"no.variables": "There are no variables to solve in the equation"
 	};
 
 	return {
