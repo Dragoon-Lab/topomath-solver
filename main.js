@@ -7,7 +7,7 @@ define([
 	"dojo/_base/array",
 	"dojo/dom-construct",
 	"./matrix",
-	"./newton-raphson"
+	"./solver-wrapper"
 ], function(ready, dom, on, query, nodeList, array, domConstruct, Matrix, Solver){
 	ready(function(){
 		var domIDs = {

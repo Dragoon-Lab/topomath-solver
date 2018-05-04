@@ -13,44 +13,12 @@ define(["parser/parser", "./matrix", "./error-messages"], function(Parser, Matri
 	* in the form of string or a parser object. Creates an object with lhs and rhs parsed
 	* equations and pushes it in an array called equations. It updates the total number
 	* of variables in the equations as well.
-	* @param -	expressions - array of equations as strings or parser objects
+	* @param -	_equations - array of equations as parser objects
+	*        	_variables - array of unknown variables in the equations
 	**/
-	var _initialize = function(/* Array */ expressions){
-		equations = [];
-		variables = [];
-		for(var index in expressions){
-			var expression = expressions[index];
-			var eq = {};
-			if(typeof(expression) == "string" && expression.indexOf("=") > -1){
-				var eqs = expression.split("=");
-				if(eqs.length > 2)
-					throw {
-						type: "equation.incorrect.format",
-						message: messages.get("equation.incorrect.format")
-					};
-				eq.lhs = Parser.parse(eqs[0]);
-				eq.rhs = Parser.parse(eqs[1]);
-			} else if(typeof(expression) == "string"){
-				eq.lhs = Parser.parse(expression);
-				eq.rhs = Parser.parse(0);
-			} else if(typeof(expression) == "object" && expression.length == 2){
-				eq.lhs = expression[0];
-				eq.rhs = expression[1];
-			} else if(typeof(expression) == "object"){
-				eq.lhs = expression;
-				eq.rhs = Parser.parse(0);
-			}
-			if(_preprocessing(eq)){
-				equations.push(eq);
-				_addVariables(eq);
-			}
-		}
-
-		if(variables.length == 0)
-			throw {
-				type: "no.variables",
-				message: messages.get("no.variables")
-			};
+	var _initialize = function(/* Array */ _equations, /* Array */ _variables){
+		equations = _equations;
+		variables = _variables;
 	};
 
 	/**
@@ -114,7 +82,7 @@ define(["parser/parser", "./matrix", "./error-messages"], function(Parser, Matri
 	/**
 	* evaluates each equation at the point given. Creates a column matrix of those values
 	* @param -	X - point at which the equation values are to be evaluated
-	* @result -	_fX - Matrix object which has the equation value at the point
+	* @return -	_fX - Matrix object which has the equation value at the point
 	**/
 	var _calculateFunctionalValue = function(/* Matrix */ X){
 		var _fX = new Matrix(equations.length, 1, 0);
@@ -228,45 +196,14 @@ define(["parser/parser", "./matrix", "./error-messages"], function(Parser, Matri
 	};
 
 	/**
-	* used to add unknown variables in the variables array created at the top.
-	* @param -	expression - from which unknown variables are to be added
-	**/
-	var _addVariables = function(/* object */ expression){
-		var update = function(variableArray){
-			for(var index in variableArray){
-				var variable = variableArray[index];
-				if(variables.indexOf(variable) < 0)
-					variables.push(variable);
-			}
-		};
-		update(expression.lhs.variables());
-		if(expression.rhs) update(expression.rhs.variables());
-	};
-
-	/**
-	* Preprocessing of equations will be part of this function. Currently preprocessing
-	* involves removing that equation which does not have any variable in it. 2 = 2 sort
-	* of equations.
-	* @param -	expression - equation which is to checked
-	* @return -	isValid - boolean to provide whether expression is correct or not.
-	**/
-	var _preprocessing = function(/* object */ expression){
-		var isValid = true;
-		if((!expression.lhs || expression.lhs.variables().length == 0) &&
-			(!expression.rhs || expression.rhs.variables().length == 0))
-			isValid = false;
-
-		return isValid;
-	};
-
-	/**
 	* constructor for the solver. takes expressions in string or object forms and
 	* initializes equation object. String format is to be used for demo and object
 	* form may be provided by topomath equations.
-	* @param -	expressions - equations that are to be solved.
+	* @param -	eqs - equations that are to be solved.
+	*        	vars - array of variables to be solved
 	**/
-	var Solver = function(expressions){
-		_initialize(expressions);
+	var Solver = function(eqs, vars){
+		_initialize(eqs, vars);
 		this.xvars = variables;
 		this.eqs = equations;
 		this.result = fX;
