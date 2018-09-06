@@ -21,7 +21,8 @@ define([
 	var _initialize = function(expressions){
 		equations = [];
 		variables = [];
-		for(var index in expressions){
+        var length = expressions.length;
+		for(var index = 0; index < length; index++){
 			var expression = expressions[index];
 			var eq = {};
 			if(typeof(expression) == "string" && expression.indexOf("=") > -1){
@@ -62,7 +63,8 @@ define([
 	**/
 	var _addVariables = function(/* object */ expression){
 		var update = function(variableArray){
-			for(var index in variableArray){
+            var length = variableArray.length;
+			for(var index = 0; index < length; index++){
 				var variable = variableArray[index];
 				if(variables.indexOf(variable) < 0)
 					variables.push(variable);
@@ -101,20 +103,20 @@ define([
 		var l = expressions.length;
 		var excess = [];
 		var checked = []; // ids that are part of the system
-		var equationVariables = [];
+		var numVariablesPerEquation = [];
 		var _comparator = function(a, b){
 			return a - b;
 		};
 		var index = start;
-		
-		for(var i in expressions){
+		var length = expressions.length;
+		for(var i = 0; i < length; i++){
 			isRedundant = true;
 			if(index == l)
 				index = 0;
 			var eq = expressions[index];
 			var ids = lang.clone(eq.lhs.variables());
 			ids = ids.concat(eq.rhs.variables());
-			equationVariables[i] = ids.length;
+			numVariablesPerEquation[i] = ids.length;
 
 			for(var j in ids){
 				var id = ids[j];
@@ -137,10 +139,14 @@ define([
 				message: messages.get("inconsistent.system")
 			};
 
+        // excess contains information about those equations which do not have any unique variable.
+        // here we sort the excess array based on the count of variables.
 		if(start === 0 && excess.length > l - variables.length)
 			for(i in excess)
-				excess.sort(function(a, b){return equationVariables[a] - equationVariables[b];});
+				excess.sort(function(a, b){return numVariablesPerEquation[a] - numVariablesPerEquation[b];});
 
+        // slicing the ones which are less constrained i.e. the ones that have less
+        // number of variables in them.
 		excess = excess.slice(0, l-variables.length);
 		excess.sort(_comparator);
 
@@ -160,7 +166,8 @@ define([
 	**/
 	_checkEquations = function(/* Array */ indexes, /* Array */ solution){
 		var values = {};
-		for(var i in variables)
+        var length = variables.length;
+		for(var i = 0; i < length; i++)
 			values[variables[i]] = solution.get(i, 0);
 
 		var _equations = lang.clone(equations);
