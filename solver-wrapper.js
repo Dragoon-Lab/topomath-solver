@@ -220,7 +220,7 @@ define([
 					doloop = false;
 				} else if(attempts >= maxAttempts)
 					throw{
-						type: "overedetermined.no.solution",
+						type: "overdetermined.no.solution",
 						message: messages.get("overdetermined.no.solution")
 					};
 			}
